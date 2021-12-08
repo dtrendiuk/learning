@@ -4,7 +4,23 @@ restartNginx () {
   systemctl start nginx
 }
 
-nginx -t
+checkNginx () {
+    NginxThreadAfter=`ps -A|grep nginx|wc -l`
+if [ $NginxThreadAfter -ne 0 ]; then
+              echo "-- Nginx is running!"
+break
+fi
+}
+
+notrunning () {
+  echo "Error:"
+  echo "-- Nginx is not running!"
+  echo "-- Trying to restart Nginx at $(date +"%d.%m.%y %H:%M:%S")..."
+}
+########################################################################
+
+nginx -t > /dev/null 2>&1
+
 if [ $? -eq 0 ]; then
    echo "Make backup of nginx website configuration"
    mkdir -p /root/backup_nginx_config/
@@ -13,69 +29,32 @@ else
    echo "Wrong Nginx configuration!"
 fi
 
-echo "Checking Nginx status..."
-
 NginxThread=`ps -A|grep nginx|wc -l`
+counter=0
+while [ $NginxThread -eq 0 ]
+do
+  notrunning
+  restartNginx
+  checkNginx
+  counter=$((counter+1))
+  if [[ "$counter" -eq 2 ]]; then
+    sleep 60
+  elif [[ "$counter" -eq 3 ]]; then
+    echo "-- Trying to restore Nginx from backup $(date +"%d.%m.%y %H:%M:%S")..."
+    cp -a /root/backup_nginx_config/* /etc/nginx/
+    notrunning
+    restartNginx
+    checkNginx
+    break
+  fi
+  echo "-- Nginx is running!"
+done
 
-if [ $NginxThread -eq 0 ]; then
-      echo "Error:"
-      echo "-- Web-server Nginx is not running!"
-      echo "-- Trying to restart Nginx at $(date +"%d.%m.%y %H:%M:%S")..."
-      restartNginx
-      sleep 5
-
-           echo "Current status:"
-           NginxThreadAfter=`ps -A|grep nginx|wc -l`
-           if [ $NginxThreadAfter -eq 0 ]; then
-              echo "-- Nginx is still not running!"
-              echo "-- Trying to restart Nginx second time at $(date +"%d.%m.%y %H:%M:%S")..."
-              restartNginx
-              sleep 60
-
-                   echo "Current status:"
-                   NginxThreadAfter=`ps -A|grep nginx|wc -l`
-                   if [ $NginxThreadAfter -eq 0 ]; then
-                      echo "-- Nginx is still not running!"
-                      echo "-- Trying to restart Nginx third time at $(date +"%d.%m.%y %H:%M:%S")..."
-                      restartNginx
-                      sleep 60
-
-                        echo "Current status:"
-                        NginxThreadAfter=`ps -A|grep nginx|wc -l`
-                        if [ $NginxThreadAfter -eq 0 ]; then
-                           echo "-- Nginx is still not running!"
-                           echo "-- Trying to restore Nginx from backup $(date +"%d.%m.%y %H:%M:%S")..."
-                           cp -a /root/backup_nginx_config/* /etc/nginx/
-                           echo "-- Trying to restart Nginx after restoration at $(date +"%d.%m.%y %H:%M:%S")..."
-
-                           restartNginx
-                           sleep 10
-                                   echo "Current status:"
-                                NginxThreadAfter=`ps -A|grep nginx|wc -l`
-                                if [ $NginxThreadAfter -eq 0 ]; then
-                                   echo "-- Nginx is still not running!"
-                                else
-                                   echo "-- Nginx is running..."
-                                fi
-
-                        else
-                           echo "-- Nginx is running..."
-                        fi
-
-                   else
-                      echo "-- Nginx is running..."
-                   fi
-
-           else
-              echo "-- Nginx is running..."
-           fi
-else
-   echo "--Nginx is running..."
-fi
-
-grep nginx_monitoring /etc/crontab
+grep nginx_monitoring /etc/crontab > /dev/null 2>&1
 if [ $? -eq 0 ]; then
    echo "There is nothing to do anymore! Good bye!"
 else echo "Adding this script to cronjobs..."
    echo "*/5 * * * * root /bin/bash -c /root/nginx_monitoring >> /dev/null 2>&1" >> /etc/crontab
 fi
+
+echo "-- Nginx is running!"
