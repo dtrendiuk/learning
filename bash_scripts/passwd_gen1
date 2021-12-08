@@ -1,0 +1,19 @@
+#!/bin/bash
+
+NUMBER_OF_CHARACTERS=16
+SPECIAL_CHARACTERS=no
+
+mkpasswd() {
+  cat /dev/urandom | tr -dc "a-zA-Z0-9" | fold -w $NUMBER_OF_CHARACTERS | head -n 1 | xargs echo;
+}
+
+mkpasswdspecchar () {
+   cat /dev/urandom | tr -dc "a-zA-Z0-9!@#$%^&*()_+?><~\`;" | fold -w $NUMBER_OF_CHARACTERS | head -n 1 | xargs echo;
+}
+
+if [ $SPECIAL_CHARACTERS == "yes" ]; then
+	mkpasswdspecchar
+else
+	mkpasswd
+fi
+
