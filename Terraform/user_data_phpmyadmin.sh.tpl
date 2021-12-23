@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#########Nginx + PHP#########################
+#########LEMP#########################
 sudo yum update -y
 sudo yum install -y gcc make
 sudo amazon-linux-extras install epel -y
@@ -12,11 +12,23 @@ sudo systemctl enable php-fpm.service
 sudo systemctl start nginx
 sudo systemctl start php-fpm.service
 
+sudo yum install -y mariadb mariadb-server
+sudo systemctl enable mariadb
+sudo systemctl start mariadb
+
+sudo yum install php-mbstring php-xml -y
+sudo systemctl restart nginx
+sudo systemctl restart php-fpm
+cd /usr/share/nginx/html/
+sudo wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.tar.gz
+sudo mkdir phpmyadmin
+sudo tar -xvzf phpMyAdmin-latest-all-languages.tar.gz -C phpmyadmin --strip-components 1
+sudo systemctl restart mariadb
+
 ###########################AWSLOGS#################################################################
 
 sudo yum install -y awslogs
-region=$(curl 169.254.169.254/latest/meta-data/placement/availability-zone | sed s'/.$//')
-sudo sed -i -e "s/region = us-east-1/region = $region/g" /etc/awslogs/awscli.conf
+sudo sed -i -e "s/region = us-east-1/region = ${region}/g" /etc/awslogs/awscli.conf
 sudo systemctl start awslogsd
 sudo chkconfig awslogs on
 sudo systemctl enable awslogsd.service

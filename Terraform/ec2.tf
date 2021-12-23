@@ -5,7 +5,7 @@ resource "aws_instance" "dev_pro_webserver_1" {
   vpc_security_group_ids = [aws_security_group.dev_pro_sg_private.id]
   iam_instance_profile   = aws_iam_instance_profile.dev_pro_instance_profile.name
   key_name               = aws_key_pair.dev_pro_key.key_name
-  user_data              = file("user_data_webserver.sh")
+  user_data              = data.template_file.user_data_webserver.rendered
 
   tags = {
     Name = "${var.env}-webserver1"
@@ -19,7 +19,7 @@ resource "aws_instance" "dev_pro_webserver_2" {
   vpc_security_group_ids = [aws_security_group.dev_pro_sg_private.id]
   iam_instance_profile   = aws_iam_instance_profile.dev_pro_instance_profile.name
   key_name               = aws_key_pair.dev_pro_key.key_name
-  user_data              = file("user_data_webserver.sh")
+  user_data              = data.template_file.user_data_webserver.rendered
 
   tags = {
     Name = "${var.env}-webserver2"
@@ -34,7 +34,7 @@ resource "aws_instance" "dev_pro_phpmyadmin" {
   vpc_security_group_ids = [aws_security_group.dev_pro_sg_private.id]
   iam_instance_profile   = aws_iam_instance_profile.dev_pro_instance_profile.name
   key_name               = aws_key_pair.dev_pro_key.key_name
-  user_data              = file("user_data_phpmyadmin.sh")
+  user_data              = data.template_file.user_data_phpmyadmin.rendered
 
   tags = {
     Name = "${var.env}-phpmyadmin"

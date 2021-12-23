@@ -52,3 +52,18 @@ output "alb_dns_name" {
   description = "ALB DNS"
   value       = aws_alb.dev_pro_alb.dns_name
 }
+
+output "user_data" {
+  description = "Use variable in user_data script"
+  value       = data.template_file.user_data_webserver.vars
+}
+
+output "user_data_rendered_webserver" {
+  description = "Check variable in user_data script"
+  value       = data.template_file.user_data_webserver.rendered
+}
+
+output "user_data_rendered_phpmyamin" {
+  description = "Check variable in user_data script"
+  value       = data.template_file.user_data_phpmyadmin.rendered
+}
