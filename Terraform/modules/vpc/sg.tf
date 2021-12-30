@@ -23,7 +23,7 @@ resource "aws_security_group" "dev_pro_sg_public" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [var.sg_cidr]
   }
 
   tags = {
@@ -49,7 +49,7 @@ resource "aws_security_group" "dev_pro_sg_private" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [var.sg_cidr]
   }
 
   tags = {
@@ -75,10 +75,33 @@ resource "aws_security_group" "dev_pro_sg_database" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [var.sg_cidr]
   }
 
   tags = {
     Name = "${var.env}-sg_database"
+  }
+}
+
+resource "aws_security_group" "dev_pro_sg_bastion" {
+  name   = "Security Group for Bastion"
+  vpc_id = aws_vpc.dev_pro_vpc.id
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [var.sg_cidr]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [var.vpc_cidr]
+  }
+
+  tags = {
+    Name = "${var.env}-sg_bastion"
   }
 }

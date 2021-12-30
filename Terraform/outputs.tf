@@ -1,15 +1,4 @@
 # Output variable definitions
-
-output "latest_amazon_linux_ami_id" {
-  description = "Latest Aamazon Linux 2 AMI ID"
-  value       = module.ec2.latest_amazon_linux_ami_id
-}
-
-output "latest_amazon_linux_ami_name" {
-  description = "Latest Aamazon Linux 2 AMI Name"
-  value       = module.ec2.latest_amazon_linux_ami_name
-}
-
 output "alb_dns_name" {
   description = "ALB DNS"
   value       = aws_alb.dev_pro_alb.dns_name
@@ -53,4 +42,35 @@ output "database_subnet_ids" {
 output "nat_gateway_ip" {
   description = "List of Elastic IPs created for AWS NAT Gateway"
   value       = module.vpc.nat_gateway_ip
+}
+
+output "user_data" {
+  description = "Use variable in user_data script"
+  value       = data.template_file.user_data_webserver.vars
+}
+
+output "user_data_rendered_webserver" {
+  description = "Check variable in user_data script"
+  value       = data.template_file.user_data_webserver.rendered
+}
+
+output "user_data_rendered_phpmyamin" {
+  description = "Check variable in user_data script"
+  value       = data.template_file.user_data_phpmyadmin.rendered
+}
+
+output "webserver_1_private_ip" {
+  description = "First Webserver Private IP"
+  value       = module.ec2-webserver1.private_ip
+}
+
+output "webserver_2_private_ip" {
+  description = "Second Webserver Private IP"
+  value       = module.ec2-webserver2.private_ip
+}
+
+output "phpmyadmin_private_ip" {
+  description = "phpMyAdmin server Private IP"
+  value       = module.ec2-phpmyadmin.private_ip
+
 }

@@ -68,17 +68,17 @@ resource "aws_alb_target_group" "dev_pro_tg_2" {
 
 resource "aws_alb_target_group_attachment" "dev_pro_tg_1_1" {
   target_group_arn = aws_alb_target_group.dev_pro_tg_1.arn
-  target_id        = module.ec2.webserver_1_id
+  target_id        = module.ec2-webserver1.instance[0]
 }
 
 resource "aws_alb_target_group_attachment" "dev_pro_tg_1_2" {
   target_group_arn = aws_alb_target_group.dev_pro_tg_1.arn
-  target_id        = module.ec2.webserver_2_id
+  target_id        = module.ec2-webserver2.instance[0]
 }
 
 resource "aws_alb_target_group_attachment" "dev_pro_tg_2" {
   target_group_arn = aws_alb_target_group.dev_pro_tg_2.arn
-  target_id        = module.ec2.phpmyadmin_id
+  target_id        = module.ec2-phpmyadmin.instance[0]
 }
 
 # CloudWatch dashboard

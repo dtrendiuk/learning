@@ -1,8 +1,32 @@
 # Input variable definitions
 
-variable "env" {
-  description = "Environment"
-  default     = "dev-pro-test"
+variable "instance_count" {
+  default = "1"
+}
+
+variable "name" {
+  description = "Name to be used on EC2 instance created"
+  type        = string
+  default     = ""
+}
+
+variable "tags" {
+  description = "A mapping of tags to assign to the resource"
+  type        = map(string)
+  default     = {}
+}
+
+variable "subnet_id_instance" {
+  description = "Subnet ID"
+  default     = ""
+}
+
+variable "key_name" {
+  default = ""
+}
+
+variable "iam_instance_profile" {
+  default = ""
 }
 
 variable "ec2_instance_type" {
@@ -10,14 +34,8 @@ variable "ec2_instance_type" {
   default     = "t2.micro"
 }
 
-variable "subnet_id_webserver_1" {
-  description = "First Webserver Subnet ID"
-  default     = ""
-}
-
-variable "subnet_id_webserver_2" {
-  description = "Second Webserver Subnet ID"
-  default     = ""
+variable "public_subnet_id" {
+  default = ""
 }
 
 variable "subnet_id_phpmyadmin" {
@@ -25,12 +43,11 @@ variable "subnet_id_phpmyadmin" {
   default     = ""
 }
 
-variable "vpc_security_group_ids_webserver" {
-  description = "Webserver Security Group ID"
-  default     = null
+variable "vpc_security_group_ids_instance" {
+  description = "Security Group ID"
+  default     = ""
 }
 
-variable "vpc_security_group_ids_phpmyadmin" {
-  description = "PhpMyAdmin security group ID"
-  default     = null
+variable "user_data" {
+  default = ""
 }
