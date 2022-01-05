@@ -1,6 +1,0 @@
-[webservers]
-webserver1 ansible_host=$webserver_1_private_ip
-webserver2 ansible_host=$webserver_2_private_ip
-
-[phpmyadmin]
-phpmyadmin ansible_host=$phpmyadmin_private_ip

@@ -1,0 +1,30 @@
+---
+# tasks file for phpmyadmin
+- name: Install mariadb
+  yum:
+    name:
+      - mariadb
+      - mariadb-server
+    state: latest
+
+- name: Start mariadb
+  service:
+    name: mariadb
+    enabled: true
+    state: started
+
+- name: Create phpmyadmin directory
+  file:
+    path: /usr/share/nginx/html/phpmyadmin/
+    state: directory
+
+- name: Setup phpmyadmin
+  ansible.builtin.unarchive:
+    src: https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.tar.gz
+    dest: "{{ destin_folder }}"
+    extra_opts: [--strip-components=1]
+    remote_src: yes
+  notify:
+    - Restart nginx
+    - Restart php-fpm
+    - Restart mariadb

@@ -117,35 +117,12 @@ state_file = /var/lib/awslogs/agent-state
 #  %c           Locale's appropriate date and time representation.                                      Tue Aug 16 21:30:00 1988 (en_US)
 # ----------------------------------------------------------------------------------------------------------------------
 
-
-[/var/log/messages]
-datetime_format = %b %d %H:%M:%S
-file = /var/log/messages
+{% for log in log_paths %}
+[{{ log.stream }}]
+datetime_format = %Y-%m-%d %H:%M:%S
+file = {{ log.path }}
 buffer_duration = 5000
 log_stream_name = {instance_id}
-initial_position = start_of_file
-log_group_name = /var/log/messages
-
-[var/log/audit/audit.log]
-datetime_format = %b %d %H:%M:%S
-file = /var/log/audit/audit.log
-buffer_duration = 5000
-log_stream_name = {instance_id}
-initial_position = start_of_file
-log_group_name = var/log/audit/audit.log
-
-[/var/log/nginx/access.log]
-datetime_format = %b %d %H:%M:%S
-file = /var/log/nginx/access.log
-buffer_duration = 5000
-log_stream_name = {instance_id}
-initial_position = start_of_file
-log_group_name = /var/log/nginx/access.log
-
-[/var/log/nginx/error.log]
-datetime_format = %b %d %H:%M:%S
-file = /var/log/nginx/error.log
-buffer_duration = 5000
-log_stream_name = {instance_id}
-initial_position = start_of_file
-log_group_name = /var/log/nginx/error.log
+initial_position = end_of_file
+log_group_name = {{ log.log_group_name }}
+{% endfor %}

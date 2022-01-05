@@ -1,0 +1,18 @@
+---
+# tasks file for nginx
+- name: Enable nginx repo for Amazon Linux 2
+  shell: "amazon-linux-extras enable nginx1.12 epel"
+  become: yes
+
+# install nginx
+- name: Install nginx
+  yum:
+    name: nginx
+    update_cache: yes
+    state: latest
+
+- name: Start nginx and enable it
+  service:
+    name: nginx
+    state: started
+    enabled: yes
