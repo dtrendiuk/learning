@@ -7,3 +7,5 @@ filters:
 keyed_groups:
   - key: tags.Type
   - key: tags.Env
+compose:
+  ansible_host: private_ip_address
