@@ -26,9 +26,8 @@ resource "aws_eip" "dev_pro_nat_gw_eip" {
 }
 
 resource "aws_nat_gateway" "dev_pro_nat_gw" {
-  #  count         = length(var.public_subnet_cidrs) # commited not to use many EIPs
   allocation_id = aws_eip.dev_pro_nat_gw_eip.id
-  subnet_id     = aws_subnet.dev_pro_public_subnets[0].id # specified particular public subnet due to count above
+  subnet_id     = aws_subnet.dev_pro_public_subnets[0].id
 
   tags = {
     Name = "${var.env}-nat_gw"

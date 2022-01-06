@@ -10,5 +10,9 @@ resource "aws_instance" "dev_pro_instance" {
   key_name               = var.key_name
   user_data              = var.user_data
 
-  tags = merge({ "Name" = var.name }, var.tags)
+  tags = merge({
+    "Name" = var.name
+    "Type" = var.type
+    "Env"  = var.env
+  }, var.tags)
 }

@@ -44,21 +44,6 @@ output "nat_gateway_ip" {
   value       = module.vpc.nat_gateway_ip
 }
 
-output "user_data" {
-  description = "Use variable in user_data script"
-  value       = data.template_file.user_data_webserver.vars
-}
-
-output "user_data_rendered_webserver" {
-  description = "Check variable in user_data script"
-  value       = data.template_file.user_data_webserver.rendered
-}
-
-output "user_data_rendered_phpmyamin" {
-  description = "Check variable in user_data script"
-  value       = data.template_file.user_data_phpmyadmin.rendered
-}
-
 output "webserver_1_private_ip" {
   description = "First Webserver Private IP"
   value       = module.ec2-webserver1.private_ip
@@ -72,5 +57,20 @@ output "webserver_2_private_ip" {
 output "phpmyadmin_private_ip" {
   description = "phpMyAdmin server Private IP"
   value       = module.ec2-phpmyadmin.private_ip
+}
 
+output "bastion_ip" {
+  description = "Bation Public IP"
+  value       = module.ec2-bastion.public_ip
+}
+
+output "user_data_rendered_bastion" {
+  description = "Check variable in user_data script"
+  value       = data.template_file.user_data_bastion.rendered
+}
+
+output "user_data_bastion" {
+  description = "Use variable in user_data script"
+  value       = data.template_file.user_data_bastion.vars
+  sensitive   = true
 }

@@ -39,8 +39,3 @@ output "sg_database_id" {
   description = "Database Security Group ID"
   value       = aws_security_group.dev_pro_sg_database.id
 }
-
-output "sg_bastion_id" {
-  description = "Database Security Group ID"
-  value       = aws_security_group.dev_pro_sg_bastion.id
-}

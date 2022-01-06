@@ -1,5 +1,9 @@
 # Input variable definitions
 
+variable "key_name" {
+  default = "ansible"
+}
+
 variable "env" {
   default = "dev-pro-test"
 }

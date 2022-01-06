@@ -3,20 +3,13 @@ resource "aws_security_group" "dev_pro_sg_public" {
   vpc_id = aws_vpc.dev_pro_vpc.id
 
   dynamic "ingress" {
-    for_each = ["80", "443"]
+    for_each = ["80", "443", "22"]
     content {
       from_port   = ingress.value
       to_port     = ingress.value
       protocol    = "tcp"
       cidr_blocks = [var.sg_cidr]
     }
-  }
-
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = [var.vpc_cidr]
   }
 
   egress {
@@ -80,28 +73,5 @@ resource "aws_security_group" "dev_pro_sg_database" {
 
   tags = {
     Name = "${var.env}-sg_database"
-  }
-}
-
-resource "aws_security_group" "dev_pro_sg_bastion" {
-  name   = "Security Group for Bastion"
-  vpc_id = aws_vpc.dev_pro_vpc.id
-
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = [var.sg_cidr]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = [var.vpc_cidr]
-  }
-
-  tags = {
-    Name = "${var.env}-sg_bastion"
   }
 }

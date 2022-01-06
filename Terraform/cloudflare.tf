@@ -1,5 +1,4 @@
 # cloudflare infrastructure
-
 resource "cloudflare_record" "cname" {
   zone_id = var.cloudflare_zone_id
   name    = var.domain

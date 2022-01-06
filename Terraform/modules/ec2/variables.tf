@@ -10,6 +10,18 @@ variable "name" {
   default     = ""
 }
 
+variable "type" {
+  description = "Type to be used on EC2 instance created"
+  type        = string
+  default     = ""
+}
+
+variable "env" {
+  description = "Env to be used on EC2 instance created"
+  type        = string
+  default     = "dev"
+}
+
 variable "tags" {
   description = "A mapping of tags to assign to the resource"
   type        = map(string)
