@@ -1,8 +1,8 @@
 # ALB
 resource "aws_alb" "dev_pro_alb" {
   name            = var.alb_name
-  subnets         = [aws_subnet.dev_pro_public_subnets[0].id, aws_subnet.dev_pro_public_subnets[1].id]
-  security_groups = [aws_security_group.dev_pro_sg_public.id]
+  subnets         = module.vpc.public_subnet_ids[*]
+  security_groups = [module.vpc.sg_public_id]
 
   tags = {
     Name = "${var.env}-alb"
@@ -40,7 +40,7 @@ resource "aws_alb_target_group" "dev_pro_tg_1" {
   name     = var.tg_1_name
   port     = var.tg_1_port
   protocol = var.tg_1_protocol
-  vpc_id   = aws_vpc.dev_pro_vpc.id
+  vpc_id   = module.vpc.vpc_id
 
   tags = {
     Name = "${var.env}-tg-1"
@@ -55,7 +55,7 @@ resource "aws_alb_target_group" "dev_pro_tg_2" {
   name     = var.tg_2_name
   port     = var.tg_2_port
   protocol = var.tg_2_protocol
-  vpc_id   = aws_vpc.dev_pro_vpc.id
+  vpc_id   = module.vpc.vpc_id
 
   tags = {
     Name = "${var.env}-tg-2"
@@ -68,18 +68,17 @@ resource "aws_alb_target_group" "dev_pro_tg_2" {
 
 resource "aws_alb_target_group_attachment" "dev_pro_tg_1_1" {
   target_group_arn = aws_alb_target_group.dev_pro_tg_1.arn
-  target_id        = aws_instance.dev_pro_webserver_1.id
+  target_id        = module.ec2-webserver1.instance[0]
 }
 
 resource "aws_alb_target_group_attachment" "dev_pro_tg_1_2" {
   target_group_arn = aws_alb_target_group.dev_pro_tg_1.arn
-  target_id        = aws_instance.dev_pro_webserver_2.id
+  target_id        = module.ec2-webserver2.instance[0]
 }
 
 resource "aws_alb_target_group_attachment" "dev_pro_tg_2" {
-  count            = length(aws_instance.dev_pro_phpmyadmin)
   target_group_arn = aws_alb_target_group.dev_pro_tg_2.arn
-  target_id        = aws_instance.dev_pro_phpmyadmin[count.index].id
+  target_id        = module.ec2-phpmyadmin.instance[0]
 }
 
 # CloudWatch dashboard
