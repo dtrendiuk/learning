@@ -1,7 +1,7 @@
 # ALB
 resource "aws_alb" "dev_pro_alb" {
   name            = var.alb_name
-  subnets         = [module.vpc.public_subnet_ids[0], module.vpc.public_subnet_ids[1]]
+  subnets         = module.vpc.public_subnet_ids[*]
   security_groups = [module.vpc.sg_public_id]
 
   tags = {
