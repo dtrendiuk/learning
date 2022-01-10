@@ -1,0 +1,24 @@
+---
+# tasks file for php-fpm
+- name: Enable php repo for Amazon Linux 2
+  shell: "amazon-linux-extras enable php7.2 epel"
+  become: yes
+
+- name: Install php-fpm
+  yum:
+    name:
+      - php-fpm
+      - php-mbstring
+      - php-xml
+      - php-cli
+      - php-json
+      - php-mysqlnd
+      - php-pdo
+      - php-common
+    state: latest
+
+- name: Start php-fpm and enable it
+  service:
+    name: php-fpm
+    state: started
+    enabled: yes

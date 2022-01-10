@@ -1,0 +1,13 @@
+---
+- name: Run educational task
+  hosts: _dev
+  gather_facts: true
+  become: yes
+  tasks:
+    - name: Provision projeccts role
+      include_role:
+        name: "{{ role }}"
+      with_items: "{{ roles }}"
+      loop_control:
+        loop_var: role
+      when: ('_dev' in group_names)

@@ -1,0 +1,5 @@
+nginx_php_fpm_awslogs_group: _webserver
+roles:
+  - nginx
+  - php-fpm
+  - awslogs

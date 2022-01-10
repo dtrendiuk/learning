@@ -1,0 +1,15 @@
+---
+# defaults file for awslogs
+log_paths:
+  - path: /var/log/messages
+    stream: messages
+    log_group_name: messages
+  - path: var/log/audit/audit.log
+    stream: audit
+    log_group_name: audit
+  - path: /var/log/nginx/access.log
+    stream: nginx_access
+    log_group_name: nginx_access
+  - path: /var/log/nginx/error.log
+    stream: nginx_error
+    log_group_name: nginx_error
