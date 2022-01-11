@@ -16,7 +16,7 @@ pipeline {
     stage('TF Init&Plan') {
       steps {
         withAWS(credentials: 'jenkins-aws-credentials', region: 'eu-west-1') {
-        dir (Terraform) {
+        dir ("Terraform") {
         sh 'terraform init'
         sh 'terraform plan'
       }
