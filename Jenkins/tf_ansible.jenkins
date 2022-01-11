@@ -11,15 +11,72 @@ pipeline {
       timestamps()
   }
 
+  environment {
+    CLOUDFLARE_TOKEN = credentials('cloudflare')
+  }
+
   stages {
 
     stage('TF Init&Plan') {
       steps {
-        withAWS(credentials: 'jenkins-aws-credentials', region: 'eu-west-1') {
+        withAWS([credentials: 'jenkins-aws-credentials', region: 'eu-west-1']) {
         dir ("Terraform") {
-        sh 'terraform init'
-        sh 'terraform plan'
+        sh '''
+          export CLOUDFLARE_API_KEY=$CLOUDFLARE_TOKEN
+          terraform init -no-color
+          terraform plan -no-color
+        '''
       }
+        }
+      }
+    }
+
+    stage('Approval') {
+  steps {
+    script {
+      def userInput = input(id: 'confirm', message: 'Apply Terraform?', parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Apply terraform', name: 'confirm'] ])
+    }
+  }
+}
+
+    stage('TF Apply') {
+      steps {
+        withAWS([credentials: 'jenkins-aws-credentials', region: 'eu-west-1']) {
+        dir ("Terraform") {
+        sh '''
+          export CLOUDFLARE_API_KEY=$CLOUDFLARE_TOKEN
+          terraform apply -auto-approve -no-color
+        '''
+      }
+        }
+      }
+    }
+
+    stage('Ansible') {
+      steps {
+        withAWS([credentials: 'jenkins-aws-credentials', region: 'eu-west-1']) {
+        dir ("Terraform") {
+        sh '''
+          ssh ec2-user@$(terraform output -json bastion_ip | jq -r)
+          cd /home/ec2-user/learning/ansible
+        '''
+      }
+        }
+      }
+    }
+
+    stage('GetIPexample') {
+      steps {
+        withAWS([credentials: 'jenkins-aws-credentials', region: 'eu-west-1']) {
+          dir ("Terraform") {
+            script {
+              BASTION_IP = sh (
+                  script: 'echo "192.168.1.1"',
+                  returnStdout: true
+              ).trim()
+              echo "Bastion IP is ${BASTION_IP}"
+            }
+          }
         }
       }
     }
