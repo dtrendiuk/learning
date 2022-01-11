@@ -1,0 +1,30 @@
+#!groovy
+// Run TF
+
+properties([disableConcurrentBuilds()])
+
+pipeline {
+  agent any
+
+  environment {
+        AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+    }
+  }
+  options {
+      buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+      timestamps()
+  }
+
+  stages {
+
+    stage('TF Init&Plan') {
+      steps {
+        dir (Terraform) {
+        sh 'terraform init'
+        sh 'terraform plan'
+        }
+      }
+    }
+
+}
