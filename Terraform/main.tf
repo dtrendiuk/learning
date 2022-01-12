@@ -41,7 +41,7 @@ module "ec2-bastion" {
 
   name                            = "${var.env}-bastion"
   iam_instance_profile            = aws_iam_instance_profile.bastion_instance_profile.name
-  key_name                        = aws_key_pair.ansible_key.key_name
+  key_name                        = aws_key_pair.dev_pro_key.key_name
   vpc_security_group_ids_instance = [module.vpc.sg_public_id]
   subnet_id_instance              = module.vpc.public_subnet_ids[0]
   user_data                       = data.template_file.user_data_bastion.rendered
