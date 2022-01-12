@@ -31,7 +31,7 @@ pipeline {
       }
     }
 
-    stage('Approval') {
+    stage('TF Apply Approval') {
   steps {
     script {
       def userInput = input(id: 'confirm', message: 'Apply Terraform?', parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Apply terraform', name: 'confirm'] ])
@@ -49,37 +49,33 @@ pipeline {
         '''
       }
         }
-      }
+     }
     }
+
+    stage('Ansible Approval') {
+  steps {
+    script {
+      def userInput = input(id: 'confirm', message: 'Apply Ansible-playbook?', parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Apply ansible-playbook', name: 'confirm'] ])
+    }
+  }
+}
 
     stage('Ansible') {
       steps {
         withAWS([credentials: 'jenkins-aws-credentials', region: 'eu-west-1']) {
         dir ("Terraform") {
         sh '''
-          ssh ec2-user@$(terraform output -json bastion_ip | jq -r)
-          cd /home/ec2-user/learning/ansible
+          terraform output -json bastion_ip | jq -r
+          ssh -T -i ~/.ssh/ida_rsa -o StrictHostKeyChecking=no ec2-user@$(terraform output -json bastion_ip | jq -r) "
+          cd /home/ec2-user/ansible/ansible;
+          ansible-galaxy collection install amazon.aws;
+          pip3 install --user boto3;
+          ansible-playbook -i inventory_aws_ec2.yml playbook.yml
+          "
         '''
       }
         }
       }
     }
-
-    stage('GetIPexample') {
-      steps {
-        withAWS([credentials: 'jenkins-aws-credentials', region: 'eu-west-1']) {
-          dir ("Terraform") {
-            script {
-              BASTION_IP = sh (
-                  script: 'echo "192.168.1.1"',
-                  returnStdout: true
-              ).trim()
-              echo "Bastion IP is ${BASTION_IP}"
-            }
-          }
-        }
-      }
-    }
-
-}
+  }
 }
