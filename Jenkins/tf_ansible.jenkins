@@ -1,5 +1,5 @@
 #!groovy
-// Run TF
+// Run TF and Ansible
 
 properties([disableConcurrentBuilds()])
 
@@ -65,8 +65,10 @@ pipeline {
         withAWS([credentials: 'jenkins-aws-credentials', region: 'eu-west-1']) {
         dir ("Terraform") {
         sh '''
-          terraform output -json bastion_ip | jq -r
           ssh -T -i ~/.ssh/ida_rsa -o StrictHostKeyChecking=no ec2-user@$(terraform output -json bastion_ip | jq -r) "
+          sudo yum update -y && sudo yum install git -y && sudo pip3 install ansible;
+          mkdir /home/ec2-user/ansible;
+          git clone https://github.com/dtrendiuk/learning.git /home/ec2-user/ansible/;
           cd /home/ec2-user/ansible/ansible;
           ansible-galaxy collection install amazon.aws;
           pip3 install --user boto3;

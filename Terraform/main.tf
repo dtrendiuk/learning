@@ -46,12 +46,6 @@ module "ec2-bastion" {
   subnet_id_instance              = module.vpc.public_subnet_ids[0]
   user_data                       = data.template_file.user_data_bastion.rendered
   env                             = "bastion"
-
-  depends_on = [
-    module.ec2-webserver1.instance,
-    module.ec2-webserver2.instance,
-    module.ec2-phpmyadmin.instance
-  ]
 }
 
 # IAM roles
